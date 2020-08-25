@@ -1,0 +1,1 @@
+document.write("This is piece of code is sourced from the 'script.js' file!");

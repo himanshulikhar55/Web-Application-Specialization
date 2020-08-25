@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Testing the DOM</title>
+</head>
+<body>
+	<p>
+		Hello <b> <span id="person">Himanshu</span> </b>there.
+	</p>
+	<script type="text/javascript">
+		st = document.getElementById('person').innerHTML;
+		console.log("ST = "+st);
+		console.dir(document.getElementById('person'));
+		alert('Hi there ' + st);
+		document.getElementById('person').innerHTML = 'Joseph';
+	</script>
+</body>
+</html>

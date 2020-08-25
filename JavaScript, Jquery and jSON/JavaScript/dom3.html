@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>A liiitle more playing with DOM...</title>
+</head>
+<body>
+	<a href="#" onclick="moreRows();return false;">More Rows Please</a>
+	<ul id="list">
+		<li>
+			This is the original list...just this row. Any subsequent row will mean that it is added as you play with the button above.
+		</li>
+	</ul>
+
+	<script type="text/javascript">
+		function moreRows(){
+			var x = document.createElement('li');
+			x.className = 'list';
+			x.innerHTML = "Appending a row...";
+			document.getElementById('list').appendChild(x);
+		}
+	</script>
+</body>
+</html>
