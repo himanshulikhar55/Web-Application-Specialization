@@ -1,5 +1,5 @@
 <?php
-	$pdo = new PDO('mysql:host=localhost;port=3306;dbname=Music','root','Messilikhar123$');
+	$pdo = new PDO('mysql:host=localhost;port=3306;dbname=Music','root','nicepassword123');
 	$query = $pdo->query("select * from Track");
 	echo '<table border="1">'."\n";
 	while($row = $query->fetch(PDO::FETCH_ASSOC)){
