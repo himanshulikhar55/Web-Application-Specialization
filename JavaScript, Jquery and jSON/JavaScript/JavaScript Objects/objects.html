@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>
+		JavaScript Objects
+	</title>
+</head>
+<body>
+	<p>
+		Let us see how we can assign a variable as function
+	</p>
+	<p>
+		In the function "partyAnimal()" what we have done is that we have assigned the attribute "party" a value of "function".
+	</p>
+	<script type="text/javascript">
+		function partyAnimal(){
+			this.x = 0;
+			this.party = function(){
+				this.x++;
+				console.log("So far the value of x is " + this.x);
+			}
+		}
+		an = new partyAnimal();
+		an.party();
+		an.party();
+		an.party();
+		an.party();
+	</script>
+</body>
+</html>
