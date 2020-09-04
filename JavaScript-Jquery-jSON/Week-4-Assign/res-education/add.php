@@ -15,51 +15,35 @@
 
 	$submit = validate();
 	$submitPos = validatePos();
+	$submitEdu = validateEdu();
 	//Check to see if we have some POST data, if we do process it
-	if ($submit === true && $submitPos === true && isset($_POST['email'])){
-		try{
-		    $stmt = $pdo->prepare('INSERT INTO Profile (user_id,first_name, last_name, email, headline, summary) VALUES (:user_id, :first_name, :last_name, :email, :headline,:summary)');
-	        $stmt->execute(array(
-	                ':user_id' => $_SESSION['user_id'],
-	                ':first_name' => $_POST['first_name'],
-	                ':last_name' => $_POST['last_name'],
-	                ':email' => $_POST['email'],
-	                ':headline' => $_POST['headline'],
-	                ':summary' => $_POST['summary'])
-	        );
-		}
-		catch(PDOException $e){
-			die($e->message);
-		}
+	if ($submit === true && $submitPos === true && $submitEdu === true && isset($_POST['email'])){
+		
+		// die("HERE");
+		$profSuccess = insertProfile($pdo);
+		if($profSuccess !== true)
+			die($profSuccess);
 		$profile_id = $pdo->lastInsertId();
-		// $profile_id = 43;
-		$rank = 1;
-	    for($i=1; $i<=9; $i++){
-		    if( ! isset($_POST['year'.$i]) || ! isset($_POST['desc'.$i]))
-		    	continue;
-		    else{
-		    	// die("IN ELSE");
-			    $year = $_POST['year'.$i];
-			    $desc = $_POST['desc'.$i];
-			    $stmt = $pdo->prepare('INSERT INTO `Position`(`profile_id`, `rank`, `year`, `description`) VALUES ( :pid, :rank, :year, :description)');
+		// die($profile_id);
 
-	            $stmt->execute(array(
-	                    ':pid' => $profile_id,
-	                    ':rank' => $rank,
-	                    ':year' => $year,
-	                    ':description' => $desc)
-	            );
-			}
-			$rank++;
-		}	    
+		$posSuccess = insertPosition($pdo, $profile_id);
+		if($posSuccess !== true)
+			die($posSuccess);
+
+		$eduSuccess = insertEducation($pdo, $profile_id);
+		if($eduSuccess !== true)
+			die($eduSuccess);
+		
 	    $_SESSION['success'] = 'Record added';
-	    // $_SESSION['success'] = $profile_id;
 	    $_SESSION['color'] = 'green';
 	    header('Location: index.php');
 		return;
 	}
 	else if(isset($_POST['email'])){
+		// die("HERE");
 		$_SESSION['error'] = ($submit !== true?$submit:$submitPos);
+		if($_SESSION['error'] === true)
+			$_SESSION['error'] = $submitEdu;
 		$_SESSION['color'] = "red";
 		header('Location: add.php');
 		return;
@@ -99,32 +83,52 @@
 				<textarea name="summary" rows="8" cols="80"></textarea>
 			</p>
 			<p>
+                <label>Education: </label>
+                <input type='button' value='+' id='addEdu'>
+            </p>
+            <div id="edu_fields"></div>
+			<p>
 				<label>Position: </label>
 				<input type='button' value='+' id='addPos'>
 			</p>
 			<div id="position_fields"></div>
-			<p>
-				<input type="submit" name="submit" value="Add">
-				<input type="submit" name="cancel" value="Cancel">
-			</p>
-		</div>
+				<p>
+					<input type="submit" name="submit" value="Add">
+					<input type="submit" name="cancel" value="Cancel">
+				</p>
+			</div>
 	</form>
-	<script type="text/javascript">
-		countPos = 0;
-		$(document).ready(function(){
-			window.console && console.log("Adding position " + countPos);
-		    $('#addPos').click(function(event){
-		    	event.preventDefault();
-		    	if(countPos>=9){
-		    		alert("Maximum of nine position entries exceeded");
-		    		return;
-		    	}
-		    	countPos++;
-		    	$('#position_fields').append(
-		    		'<div id="position' + countPos + '"> \ <p>Year: <input type="text" name="year' + countPos + '" value=""/> \ <input type="button" value="-" \ onclick="$(\'#position' + countPos + '\').remove(); return false;"></p> \ <textarea name="desc' + countPos + '" rows="8" cols="80" spellcheck="false"></textarea></div>'
-		    	);
-			});
-		});
-</script>
 </body>
 </html>
+<script type="text/javascript">
+	countPos = 0;countEdu = 0;
+	$(document).ready(function(){
+		window.console && console.log("Adding position " + countPos);
+	    $('#addPos').click(function(event){
+	    	event.preventDefault();
+	    	if(countPos>=9){
+	    		alert("Maximum of nine position entries exceeded");
+	    		return;
+	    	}
+	    	countPos++;
+	    	$('#position_fields').append(
+	    		'<div id="position' + countPos + '"> \ <p>Year: <input type="text" name="year' + countPos + '" value=""/> \ <input type="button" value="-" \ onclick="$(\'#position' + countPos + '\').remove(); return false;"></p> \ <textarea name="desc' + countPos + '" rows="8" cols="80" spellcheck="false"></textarea></div>'
+	    	);
+		});
+	});
+	$(document).ready(function(){
+		window.console && console.log("Adding education " + countEdu);
+	    $('#addEdu').click(function(event){
+	    	event.preventDefault();
+	    	if(countEdu>=9){
+	    		alert("Maximum of nine Educatoin entries exceeded");
+	    		return;
+	    	}
+	    	countEdu++;
+	    	$('#edu_fields').append(
+	    		'<div id="edu' + countEdu + '"> \ <p>Year: <input type="text" name="edu_year' + countEdu + '" value=""/> \ <input type="button" value="-" \ onclick="$(\'#edu' + countEdu + '\').remove(); return false;"></p> \ <p><label>School: </label> <input class="school" type="text" size="60" name="edu_school' + countEdu + '" value=""/></p></div>'
+	    	);
+	    	$('.school').autocomplete({source: "school.php"});
+		});
+	});
+</script>

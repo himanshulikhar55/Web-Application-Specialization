@@ -22,6 +22,19 @@
 			echo "<p>Email: " .$row->email . "</p>\n";
 			echo "<p>Headline:<br>\n" .$row->headline . "</p>\n";
 			echo "<p>Summary:<br>\n" .$row->summary . "</p>\n";
+			$stmt = $pdo->prepare("SELECT Institution.name, Education.institution_id, Education.year FROM Education JOIN Institution ON Education.profile_id = :profile_id AND Education.institution_id = Institution.institution_id");
+			$stmt->execute(array(':profile_id' => $_GET['profile_id']));
+			$rows2 = $stmt->fetchALL(PDO::FETCH_ASSOC);
+			if(count($rows2) !== 0){
+		    	echo "<p> Education:";
+		    	echo "<ul>\n";
+		    	$countPos = 1;
+			    foreach ($rows2 as $row){
+			        echo "<li>" . $row['year'] . ': ' . $row['name'] . "</li>";
+			        $countPos++;
+			    }
+			}
+		    echo "</ul>";
 			$sql = $pdo->prepare("SELECT * FROM Position WHERE profile_id = :id");
 		    $sql->execute(array(':id' => $_GET['profile_id']));
 		    $rows2 = $sql->fetchAll(PDO::FETCH_ASSOC);

@@ -29,7 +29,7 @@
 	<?php
 		$sql = $pdo->query("SELECT * FROM Profile");
 		$rows = $sql->fetchAll(PDO::FETCH_ASSOC);
-		if(!isset($_SESSION['name']))
+		if(count($rows) == 0)
 			echo "<p>No Rows Found</p>";
 		else{
 			echo "<table border='1'>\n";
@@ -47,8 +47,9 @@
 				echo "</td></tr>\n";
 			}
 			echo "</table>\n";
-			echo "<p><a href='add.php'>Add New Entry</a></p>";
 		}
+		if(isset($_SESSION['name']))
+			echo "<p><a href='add.php'>Add New Entry</a></p>";
 	?>
 	</div>
 </body>
